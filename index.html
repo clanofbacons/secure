@@ -6,9 +6,6 @@
     <title>ExtHang3r</title>
     <link rel="shortcut icon" type="image/png" href="https://raw.githubusercontent.com/Blobby-Boi/ExtHang3r/main/favicon.png">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap">
-    <style>
-        /* Your existing CSS here */
-    </style>
 </head>
 <body>
 
@@ -36,19 +33,29 @@
 </footer>
 
 <script>
-    // Your existing JavaScript code here...
+    async function checkExtensionURL(url) {
+        try {
+            const response = await fetch(url, { method: "HEAD" });
+            return response.ok;
+        } catch (error) {
+            console.log(`Error accessing ${url}:`, error);
+            return false;
+        }
+    }
 
     async function populateSelectOptions() {
         const selectElement = document.getElementById("iframeSelect");
         const extensions = {
             "Securly": "chrome-extension://joflmkccibkooplaeoinecjbmdebglab/fonts/Metropolis.css",
-            // ... other extensions
+            "Securly Classroom": "chrome-extension://another-extension-id/path/to/resource.css" // Update this with the correct path and ID
         };
 
         let hasSupportedExtensions = false;
 
         for (const [name, url] of Object.entries(extensions)) {
+            console.log(`Checking extension: ${name}, URL: ${url}`);
             if (await checkExtensionURL(url)) {
+                console.log(`Extension found: ${name}`);
                 const option = document.createElement("option");
                 option.value = url;
                 option.textContent = name;
@@ -65,21 +72,17 @@
             document.getElementById("hangButton").style.display = "none";
         }
 
-        // Retrieve last selected option from local storage
         const lastSelected = localStorage.getItem('lastSelectedExtension');
         if (lastSelected) {
             selectElement.value = lastSelected;
         }
     }
 
-    // Save selected extension to local storage
     document.getElementById("iframeSelect").addEventListener("change", function() {
         localStorage.setItem('lastSelectedExtension', this.value);
     });
 
     populateSelectOptions();
-
-    // Your existing functions like replaceIframes, warning, openExtensionPopup, etc...
 </script>
 </body>
 </html>
