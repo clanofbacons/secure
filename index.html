@@ -1,88 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExtHang3r</title>
-    <link rel="shortcut icon" type="image/png" href="https://raw.githubusercontent.com/Blobby-Boi/ExtHang3r/main/favicon.png">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ExtHang3r</title>
+  <link rel="shortcut icon" type="image/png" href="https://raw.githubusercontent.com/Blobby-Boi/ExtHang3r/main/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap">
+  <style>
+    /* Existing styles here */
+  </style>
 </head>
 <body>
 
 <header>
-    <img src="https://blobby-boi.github.io/BlobbypassXSS/favicon.png" alt="Logo" class="logo">
-    <h1>ExtHang3r</h1>
+  <img src="https://blobby-boi.github.io/BlobbypassXSS/favicon.png" alt="Logo" class="logo">
+  <h1>ExtHang3r</h1>
 </header>
 
 <div class="container">
-    <p>ExtHang3r is an exploit that allows ChromeOS users to kill managed extensions after the LTMEAT patch...</p>
-    <label for="iframeSelect" id="labelForIframeSelect">Select extension:</label>
-    <select id="iframeSelect"></select>
-    <button onclick="warning();" id="hangButton">Hang Extension!</button>
-    <button id="killButton" onclick="openExtensionPopup();">Kill Extension!</button>
+  <p>ExtHang3r is an exploit that allows ChromeOS users to kill managed extensions after the LTMEAT patch. It remains unpatched in all new ChromeOS versions as of September 2024.</p>
+  <label for="iframeSelect" id="labelForIframeSelect">Select extension:</label>
+  <select id="iframeSelect">
+    <option>Loading...</option>
+  </select>
+  <button onclick="warning();" id="hangButton">Hang Extension!</button>
+  <button id="killButton" onclick="openExtensionPopup();" style="display: none;">Kill Extension!</button>
 </div>
-
-<div class="overlay" id="overlay">
-    <div class="spinner"></div>
-    Hanging... (This will take about 1 minute)
-</div>
-<div id="killExtensionText"></div>
 
 <footer>
-    <p>Made by <a href="https://github.com/Blobby-Boi/">Blobby Boi</a></p>
+  <p>Made by <a href="https://github.com/Blobby-Boi/">Blobby Boi</a></p>
 </footer>
 
 <script>
-    async function checkExtensionURL(url) {
-        try {
-            const response = await fetch(url, { method: "HEAD" });
-            return response.ok;
-        } catch (error) {
-            console.log(`Error accessing ${url}:`, error);
-            return false;
-        }
+  async function checkExtensionURL(url) {
+    try {
+      const response = await fetch(url);
+      return response.ok;
+    } catch (error) {
+      return false;
     }
+  }
 
-    async function populateSelectOptions() {
-        const selectElement = document.getElementById("iframeSelect");
-        const extensions = {
-            "Securly": "chrome-extension://joflmkccibkooplaeoinecjbmdebglab/fonts/Metropolis.css",
-            "Securly Classroom": "chrome-extension://another-extension-id/path/to/resource.css" // Update this with the correct path and ID
-        };
+  async function populateSelectOptions() {
+    const selectElement = document.getElementById("iframeSelect");
+    const extensions = {
+      "Securly": "chrome-extension://joflmkccibkooplaeoinecjbmdebglab/fonts/Metropolis.css",
+      "Securly (old)": "chrome-extension://iheobagjkfklnlikgihanlhcddjoihkg/fonts/Metropolis.css",
+      "GoGuardian": "chrome-extension://haldlgldplgnggkjaafhelgiaglafanh/youtube_injection.js",
+      // Other extensions...
+    };
+    
+    selectElement.innerHTML = ""; // Clear the loading option
 
-        let hasSupportedExtensions = false;
+    let hasSupportedExtensions = false;
 
-        for (const [name, url] of Object.entries(extensions)) {
-            console.log(`Checking extension: ${name}, URL: ${url}`);
-            if (await checkExtensionURL(url)) {
-                console.log(`Extension found: ${name}`);
-                const option = document.createElement("option");
-                option.value = url;
-                option.textContent = name;
-                selectElement.appendChild(option);
-                hasSupportedExtensions = true;
-            }
-        }
-        
-        if (!hasSupportedExtensions) {
-            const option = document.createElement("option");
-            option.value = "";
-            option.textContent = "No supported extensions installed";
-            selectElement.appendChild(option);
-            document.getElementById("hangButton").style.display = "none";
-        }
-
-        const lastSelected = localStorage.getItem('lastSelectedExtension');
-        if (lastSelected) {
-            selectElement.value = lastSelected;
-        }
+    for (const [name, url] of Object.entries(extensions)) {
+      if (await checkExtensionURL(url)) {
+        const option = document.createElement("option");
+        option.value = url;
+        option.textContent = name;
+        selectElement.appendChild(option);
+        hasSupportedExtensions = true;
+      }
     }
+    
+    if (!hasSupportedExtensions) {
+      const option = document.createElement("option");
+      option.value = "";
+      option.textContent = "No supported extensions installed";
+      selectElement.appendChild(option);
+      document.getElementById("hangButton").style.display = "none";
+    }
+  }
 
-    document.getElementById("iframeSelect").addEventListener("change", function() {
-        localStorage.setItem('lastSelectedExtension', this.value);
-    });
-
+  document.addEventListener("DOMContentLoaded", () => {
     populateSelectOptions();
+  });
 </script>
 </body>
 </html>
