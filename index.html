@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ExtHang3r</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap">
+  <style>
+    body {
+      font-family: 'Varela Round', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    select, button {
+      font-family: 'Varela Round', sans-serif;
+      font-size: 16px;
+      padding: 10px;
+      margin: 5px;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <label for="iframeSelect">Select extension:</label>
+  <select id="iframeSelect">
+  </select>
+  <button onclick="alert('Action triggered!');">Hang Extension</button>
+
+  <script>
+    async function checkExtensionURL(url) {
+      try {
+        const response = await fetch(url);
+        return response.ok;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    async function populateSelectOptions() {
+      const selectElement = document.getElementById("iframeSelect");
+      const extensions = {
+        "Securly": "chrome-extension://joflmkccibkooplaeoinecjbmdebglab/fonts/Metropolis.css",
+        "GoGuardian": "chrome-extension://haldlgldplgnggkjaafhelgiaglafanh/youtube_injection.js",
+        "LANSchool": "chrome-extension://baleiojnjpgeojohhhfbichcodgljmnj/blocked.html",
+        "Blocksi": "chrome-extension://ghlpmldmjjhmdgmneoaibbegkjjbonbk/pages/blockPage.html"
+      };
+      
+      for (const [name, url] of Object.entries(extensions)) {
+        if (await checkExtensionURL(url)) {
+          const option = document.createElement("option");
+          option.value = url;
+          option.textContent = name;
+          selectElement.appendChild(option);
+        }
+      }
+    }
+
+    populateSelectOptions();
+  </script>
+
+</body>
+</html>
